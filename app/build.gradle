@@ -16,6 +16,12 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        def properties = new Properties()
+        properties.load(new FileInputStream(rootProject.file("local.properties")))
+
+        buildConfigField "String", "BASE_URL", '"https://openexchangerates.org/api/"'
+        buildConfigField "String", "APP_ID", "\"${properties.getProperty('APP_ID')}\""
     }
 
     buildTypes {
