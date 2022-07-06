@@ -4,6 +4,7 @@
     package="com.codewithteju.penguinpaysw">
 
     <application
+        android:name=".PenguinPayApplication"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
