@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">PenguinPaySW</string>
+
+    <string name="full_name">Full Name</string>
+    <string name="country">Country</string>
+    <string name="phone_number">Phone</string>
+    <string name="amount_to_transfer">Amount to Transfer</string>
+    <string name="send">Send Money</string>
 </resources>
