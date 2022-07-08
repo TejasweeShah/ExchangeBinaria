@@ -5,8 +5,13 @@
 
     <data>
         <variable
+            name="statusMessage"
+            type="String" />
+
+        <variable
             name="country"
             type="String" />
+
     </data>
 
     <ScrollView
@@ -22,7 +27,7 @@
                 android:id="@+id/status"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="STATUS"
+                android:text="@{statusMessage}"
                 android:textAlignment="center"
                 android:textSize="20sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -124,6 +129,17 @@
                     android:lines="1" />
             </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView
+                android:id="@+id/exchangeInfo"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:textAlignment="center"
+                android:textSize="28sp"
+                app:layout_constraintEnd_toEndOf="@+id/amountContainer"
+                app:layout_constraintStart_toStartOf="@+id/amountContainer"
+                app:layout_constraintTop_toBottomOf="@id/amountContainer" />
+
             <Button
                 android:id="@+id/payButton"
                 android:layout_width="match_parent"
@@ -134,7 +150,7 @@
                 android:textSize="24sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/amountContainer" />
+                app:layout_constraintTop_toBottomOf="@+id/exchangeInfo" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
