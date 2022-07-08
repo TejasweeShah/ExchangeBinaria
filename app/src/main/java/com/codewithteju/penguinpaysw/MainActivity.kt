@@ -3,10 +3,13 @@ package com.codewithteju.penguinpaysw
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.ArrayAdapter
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.codewithteju.penguinpaysw.databinding.ActivityMainBinding
+import com.codewithteju.penguinpaysw.db.PenguinPayDB
+import com.codewithteju.penguinpaysw.repository.ReceivingCountryRepository
 import com.codewithteju.penguinpaysw.utils.*
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -22,6 +25,15 @@ class MainActivity : AppCompatActivity() {
         networkStatusManager = NetworkConnectionLD(application)
         mainActivityBinding = DataBindingUtil.setContentView(this,R.layout.activity_main)
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+
+        //val receivingCountryDAO = PenguinPayDB.getDatabase(applicationContext).receivingCountryDao()
+       // val repository = ReceivingCountryRepository(receivingCountryDAO)
+
+        mainViewModel.getCountries().observe(this) {
+            val arrayAdapter = ArrayAdapter(this, R.layout.dropdowm_item, it)
+            mainActivityBinding.countryACTextView.setAdapter(arrayAdapter)
+        }
+
 
         networkStatusManager.observe(this, Observer{ isConnected ->
             if(isConnected){
