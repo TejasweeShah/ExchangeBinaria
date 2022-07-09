@@ -1,55 +1,69 @@
 package com.codewithteju.penguinpaysw
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.text.InputFilter
+import android.text.InputFilter.LengthFilter
 import android.util.Log
 import android.widget.ArrayAdapter
-import androidx.databinding.DataBindingUtil
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.codewithteju.penguinpaysw.databinding.ActivityMainBinding
-import com.codewithteju.penguinpaysw.db.PenguinPayDB
-import com.codewithteju.penguinpaysw.repository.ReceivingCountryRepository
-import com.codewithteju.penguinpaysw.utils.*
+import com.codewithteju.penguinpaysw.utils.NetworkConnectionLD
+import com.codewithteju.penguinpaysw.utils.RequestResult
+import com.codewithteju.penguinpaysw.utils.TAG
 import dagger.hilt.android.AndroidEntryPoint
+
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
     private lateinit var networkStatusManager: NetworkConnectionLD
-    lateinit var mainViewModel: MainViewModel
+    private lateinit var mainViewModel: MainViewModel
     lateinit var mainActivityBinding : ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         networkStatusManager = NetworkConnectionLD(application)
-        mainActivityBinding = DataBindingUtil.setContentView(this,R.layout.activity_main)
+
+        mainActivityBinding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(mainActivityBinding.root)
+
         mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
 
-        //val receivingCountryDAO = PenguinPayDB.getDatabase(applicationContext).receivingCountryDao()
-       // val repository = ReceivingCountryRepository(receivingCountryDAO)
-
-        mainViewModel.getCountries().observe(this) {
-            val arrayAdapter = ArrayAdapter(this, R.layout.dropdowm_item, it)
+        mainViewModel.allCountriesLD.observe(this) {
+            val countryNames = it.map { country -> country.name }
+            val arrayAdapter = ArrayAdapter(this, R.layout.dropdowm_item, countryNames)
             mainActivityBinding.countryACTextView.setAdapter(arrayAdapter)
-        }
+            mainActivityBinding.countryACTextView.setOnItemClickListener { adapterView, view, position, id ->
+                //val  selectedName = adapterView.getItemAtPosition(position) as String
+                val selectedCountry = it[position]
+                Log.d(TAG,selectedCountry.name + selectedCountry.phonePrefix)
 
+                mainActivityBinding.phoneNumberContainer.prefixText = selectedCountry.phonePrefix
+                mainActivityBinding.phoneNumberContainer.counterMaxLength = selectedCountry.phoneDigits
+
+                val phoneDigits = selectedCountry.phoneDigits
+                val fArray = arrayOfNulls<InputFilter>(1)
+                fArray[0] = LengthFilter(phoneDigits)
+                mainActivityBinding.phoneNumberEditText.filters = fArray
+            }
+        }
 
         networkStatusManager.observe(this, Observer{ isConnected ->
             if(isConnected){
                 mainViewModel.getLatestRates()
-                mainActivityBinding.statusMessage = "Connected"
+                mainActivityBinding.status.text = "Connected"
                 mainActivityBinding.payButton.isEnabled = true
-
             }
             else{
-                mainActivityBinding.statusMessage = "NOT Connected"
+                mainActivityBinding.status.text = "NOT Connected"
                 mainActivityBinding.payButton.isEnabled = false
                 mainActivityBinding.exchangeInfo.text = ""
             }
             Log.d(TAG,isConnected.toString())
         })
-
 
 
         mainViewModel.latestRatesLD.observe(this, Observer {
@@ -65,6 +79,7 @@ class MainActivity : AppCompatActivity() {
                 }
             }
         })
+
 
     }
 }

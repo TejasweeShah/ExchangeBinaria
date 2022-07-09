@@ -19,6 +19,8 @@ class MainViewModel @Inject constructor(private val ppRepository: PenguinPayRepo
     val latestRatesLD : LiveData<RequestResult<ExchangeRates>>
         get() = ppRepository.latestResponse
 
+    val allCountriesLD : LiveData<List<Country>>
+        get() = getAll()
 
     fun getLatestRates() {
         viewModelScope.launch {
@@ -26,11 +28,9 @@ class MainViewModel @Inject constructor(private val ppRepository: PenguinPayRepo
         }
     }
 
-    fun getAll() : LiveData<List<Country>>{
+    private fun getAll() : LiveData<List<Country>>{
         return countryRepository.getAll()
     }
 
-    fun getCountries() : LiveData<List<String>>{
-        return countryRepository.getCountries()
-    }
+
 }
