@@ -7,7 +7,6 @@ import com.codewithteju.penguinpaysw.BuildConfig
 import com.codewithteju.penguinpaysw.api.PenguinPayAPI
 import com.codewithteju.penguinpaysw.models.ExchangeRates
 import com.codewithteju.penguinpaysw.utils.RequestResult
-import org.json.JSONObject
 import javax.inject.Inject
 
 class PenguinPayRepository @Inject constructor( private val ppAPI : PenguinPayAPI) {
@@ -17,7 +16,7 @@ class PenguinPayRepository @Inject constructor( private val ppAPI : PenguinPayAP
         get() = _latestResponse
 
     suspend fun getLatestRates() {
-        val response = ppAPI.fetchLatestRates()
+        val response = ppAPI.fetchLatestRates(BuildConfig.APP_ID)
         if(response.isSuccessful && response.body() != null) {
             _latestResponse.postValue(RequestResult.Success(response.body()!!))
             Log.d("PP",response.body().toString())
