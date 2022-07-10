@@ -1,11 +1,11 @@
 package com.codewithteju.penguinpaysw.models
 
 data class PayInfo(
-    val personName: String,
-    val CountryName: String,
-    val countryAbbr: String,
-    val phonePrefix: String,
-    val phoneNumber: Int,
-    val exchangeRate: Int,
-    val amountToTransfer: String
+    var personName: String? = null,
+    var countryName: String? = null,
+    var countryAbbr: String? = null,
+    var phonePrefix: String? = null,
+    var phoneNumber: String? = null,
+    var exchangeRate: Double? = null,
+    val amountToTransfer: String ? = null
 )

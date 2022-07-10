@@ -1,16 +1,18 @@
 package com.codewithteju.penguinpaysw
 
+import android.opengl.Visibility
 import android.os.Bundle
+import android.text.Editable
 import android.text.InputFilter
 import android.text.InputFilter.LengthFilter
+import android.text.TextWatcher
 import android.util.Log
+import android.view.View
 import android.widget.ArrayAdapter
-import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import com.codewithteju.penguinpaysw.databinding.ActivityMainBinding
-import com.codewithteju.penguinpaysw.utils.NetworkConnectionLD
 import com.codewithteju.penguinpaysw.utils.RequestResult
 import com.codewithteju.penguinpaysw.utils.TAG
 import dagger.hilt.android.AndroidEntryPoint
@@ -18,68 +20,134 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var networkStatusManager: NetworkConnectionLD
-    private lateinit var mainViewModel: MainViewModel
-    lateinit var mainActivityBinding : ActivityMainBinding
+    private val mainViewModel: MainViewModel by viewModels()
+    private lateinit var mainActivityBinding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        networkStatusManager = NetworkConnectionLD(application)
-
         mainActivityBinding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mainActivityBinding.root)
+        observeNetworkConnectivity()
+        observeExchangeRates()
+        observeAmountChange()
+        setupPayButton()
+    }
 
-        mainViewModel = ViewModelProvider(this)[MainViewModel::class.java]
+    private fun observeExchangeRates() {
+        mainViewModel.latestRatesLiveData.observe(this){
+            when(it) {
+                is RequestResult.Error -> {
+                    mainActivityBinding.loadingProgressBar.visibility = View.GONE
+                    mainActivityBinding.exchangeInfo.text = it.message
+                }
+                is RequestResult.Loading -> {
+                    mainActivityBinding.loadingProgressBar.visibility = View.VISIBLE
+                }
+                is RequestResult.Success -> {
+                    mainActivityBinding.loadingProgressBar.visibility = View.GONE
+                }
+            }
+        }
+    }
 
-        mainViewModel.allCountriesLD.observe(this) {
+    private fun setupPayButton() {
+        mainActivityBinding.payButton.setOnClickListener {
+            if(isFormValid()) {
+                setupPaymentData()
+                showConfirmationSnackBar()
+                mainViewModel.confirmTransaction()
+                clearFormOnOK()
+            }
+        }
+    }
+
+    private fun showConfirmationSnackBar() {
+        // TODO("Not yet implemented")
+    }
+
+    private fun observeAmountChange() {
+        mainActivityBinding.transferAmountEditText.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+            }
+
+            override fun onTextChanged(chars: CharSequence?, start: Int, before: Int, count: Int) {
+                showExchangeRate(chars.toString())
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+            }
+        })
+    }
+
+    private fun observeNetworkConnectivity() {
+        mainViewModel.networkStatusManager.observe(this, Observer { isConnected ->
+            if (isConnected) {
+                setupCountryAdapter()
+                mainViewModel.fetchLatestRates()
+                mainActivityBinding.payButton.isEnabled = true
+                mainActivityBinding.noInternetL.visibility = View.GONE
+            } else {
+                mainActivityBinding.payButton.isEnabled = false
+                mainActivityBinding.exchangeInfo.text = ""
+                mainActivityBinding.noInternetL.visibility = View.VISIBLE
+            }
+            Log.d(TAG, isConnected.toString())
+        })
+    }
+
+    private fun setupCountryAdapter() {
+        mainViewModel.countriesLiveData.observe(this) {
             val countryNames = it.map { country -> country.name }
-            val arrayAdapter = ArrayAdapter(this, R.layout.dropdowm_item, countryNames)
+            val arrayAdapter = ArrayAdapter(this, com.google.android.material.R.layout.support_simple_spinner_dropdown_item, countryNames)
             mainActivityBinding.countryACTextView.setAdapter(arrayAdapter)
-            mainActivityBinding.countryACTextView.setOnItemClickListener { adapterView, view, position, id ->
+
+            mainActivityBinding.countryACTextView.setOnItemClickListener { _, _, position, _ ->
                 //val  selectedName = adapterView.getItemAtPosition(position) as String
                 val selectedCountry = it[position]
-                Log.d(TAG,selectedCountry.name + selectedCountry.phonePrefix)
+                mainViewModel.setPaymentCountryInfo(selectedCountry)
+                Log.d(TAG, selectedCountry.name + selectedCountry.phonePrefix)
 
                 mainActivityBinding.phoneNumberContainer.prefixText = selectedCountry.phonePrefix
                 mainActivityBinding.phoneNumberContainer.counterMaxLength = selectedCountry.phoneDigits
+                mainActivityBinding.phoneNumberEditText.text?.clear()
 
                 val phoneDigits = selectedCountry.phoneDigits
                 val fArray = arrayOfNulls<InputFilter>(1)
                 fArray[0] = LengthFilter(phoneDigits)
                 mainActivityBinding.phoneNumberEditText.filters = fArray
+
+                showExchangeRate(mainActivityBinding.transferAmountEditText.text.toString())
             }
         }
+    }
 
-        networkStatusManager.observe(this, Observer{ isConnected ->
-            if(isConnected){
-                mainViewModel.getLatestRates()
-                mainActivityBinding.status.text = "Connected"
-                mainActivityBinding.payButton.isEnabled = true
-            }
-            else{
-                mainActivityBinding.status.text = "NOT Connected"
-                mainActivityBinding.payButton.isEnabled = false
-                mainActivityBinding.exchangeInfo.text = ""
-            }
-            Log.d(TAG,isConnected.toString())
-        })
+    private fun showExchangeRate(amountString: String) {
+        if(amountString.isNotEmpty()){
+            val amountUSD = mainViewModel.convertBinaryToUSD(amountString)
+            mainActivityBinding.amountContainer.helperText = "$amountUSD USD"
 
+            // Show exchange rate
+            val exchangeInformation = mainViewModel.getExchangeRateInBinaria(amountUSD)
+            mainViewModel.setAmountToTransfer(exchangeInformation.first,exchangeInformation.second)
+            mainActivityBinding.exchangeInfo.text = "Rate:${exchangeInformation.first} \n\n Value: ${exchangeInformation.second}"
+        }
+    }
 
-        mainViewModel.latestRatesLD.observe(this, Observer {
-            when(it){
-                is RequestResult.Success -> {
-                    mainActivityBinding.exchangeInfo.text = it.data!!.latestRates["KES"].toString()
-                    Log.d("TAG",mainViewModel.latestRatesLD.toString())
+    fun isFormValid(): Boolean {
+        // TODO("Not yet implemented")
+        return true
+    }
 
-                }
-                is RequestResult.Error -> {
-                    mainActivityBinding.exchangeInfo.text = it.message
-                    Log.d("TAG",mainViewModel.latestRatesLD.toString())
-                }
-            }
-        })
+    private fun setupPaymentData() {
+        mainViewModel.setPayeeInfo(
+            name = mainActivityBinding.fullNameEditText.text.toString(),
+            phone = mainActivityBinding.phoneNumberEditText.text.toString()
+        )
+        // TODO: Remove this logging
+        println(mainViewModel.paymentInfo.toString())
+    }
 
-
+    fun clearFormOnOK() {
+        // TODO("Not yet implemented")
     }
 }

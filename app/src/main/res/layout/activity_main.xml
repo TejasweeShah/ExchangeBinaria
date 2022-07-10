@@ -10,34 +10,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/status"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:id="@+id/fullNameContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="32dp"
             android:layout_marginHorizontal="16dp"
             android:hint="@string/full_name"
             app:startIconDrawable="@drawable/ic_person_24"
             app:endIconMode="clear_text"
             app:helperText="Required"
-            app:helperTextTextColor="@color/red"
+            app:helperTextTextColor="@color/teal_700"
             app:counterEnabled="true"
             app:counterMaxLength="20"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/status">
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/fullNameEditText"
@@ -59,7 +48,7 @@
             app:startIconDrawable="@drawable/ic_flag_24"
             app:endIconMode="dropdown_menu"
             app:helperText="Required"
-            app:helperTextTextColor="@color/red"
+            app:helperTextTextColor="@color/teal_700"
             app:layout_constraintTop_toBottomOf="@id/fullNameContainer">
 
             <AutoCompleteTextView
@@ -80,8 +69,8 @@
             app:startIconDrawable="@drawable/ic_phone_24"
             app:endIconMode="clear_text"
             app:helperText="Required"
-            app:helperTextTextColor="@color/red"
-            app:prefixTextColor="@color/purple_500"
+            app:helperTextTextColor="@color/teal_700"
+            app:prefixTextColor="@color/orange_800"
             app:counterEnabled="true"
             app:layout_constraintTop_toBottomOf="@id/countryContainer">
 
@@ -102,7 +91,7 @@
             android:hint="@string/amount_to_transfer"
             app:endIconMode="clear_text"
             app:helperText="Required"
-            app:helperTextTextColor="@color/red"
+            app:helperTextTextColor="@color/teal_700"
             app:layout_constraintTop_toBottomOf="@id/phoneNumberContainer"
             tools:layout_editor_absoluteX="16dp">
 
@@ -113,16 +102,18 @@
                 android:inputType="number"
                 android:digits="0,1"
                 android:lines="1"
-                />
+                android:maxLength="15"
+                android:imeOptions="actionDone" />
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
             android:id="@+id/exchangeInfo"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
             android:textAlignment="center"
-            android:textSize="28sp"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:layout_margin="16dp"
             app:layout_constraintEnd_toEndOf="@+id/amountContainer"
             app:layout_constraintStart_toStartOf="@+id/amountContainer"
             app:layout_constraintTop_toBottomOf="@id/amountContainer" />
@@ -139,6 +130,47 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/exchangeInfo" />
 
+        <ProgressBar
+            android:id="@+id/loadingProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone"/>
+
+        <RelativeLayout
+            android:id="@+id/no_internet_l"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#B3FFFFFF"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/no_internet_image"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_no_internet_svg"
+                android:contentDescription="@string/no_internet_connection" />
+
+            <TextView
+                android:id="@+id/no_internet_heading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_below="@id/no_internet_image"
+                android:layout_centerHorizontal="true"
+                android:text="@string/no_internet_connection"
+                android:textAllCaps="true"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textStyle="bold" />
+        </RelativeLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ScrollView>

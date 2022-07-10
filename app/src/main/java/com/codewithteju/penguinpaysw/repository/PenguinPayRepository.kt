@@ -8,7 +8,9 @@ import com.codewithteju.penguinpaysw.api.PenguinPayAPI
 import com.codewithteju.penguinpaysw.models.ExchangeRates
 import com.codewithteju.penguinpaysw.utils.RequestResult
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class PenguinPayRepository @Inject constructor( private val ppAPI : PenguinPayAPI) {
 
     private val _latestResponse = MutableLiveData<RequestResult<ExchangeRates>>()

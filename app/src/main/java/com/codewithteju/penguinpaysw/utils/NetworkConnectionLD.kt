@@ -13,8 +13,9 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class NetworkConnectionLD(application: Application) : LiveData<Boolean>() {
+class NetworkConnectionLD @Inject constructor(application: Application) : LiveData<Boolean>() {
 
     private lateinit var networkCallback: ConnectivityManager.NetworkCallback
     private val cm = application.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
