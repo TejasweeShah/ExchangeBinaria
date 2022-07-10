@@ -1,6 +1,6 @@
 package com.codewithteju.penguinpaysw
 
-import android.opengl.Visibility
+import android.content.DialogInterface
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
@@ -9,7 +9,9 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.codewithteju.penguinpaysw.databinding.ActivityMainBinding
@@ -22,6 +24,7 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private val mainViewModel: MainViewModel by viewModels()
     private lateinit var mainActivityBinding: ActivityMainBinding
+    var alertDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,26 +57,34 @@ class MainActivity : AppCompatActivity() {
         mainActivityBinding.payButton.setOnClickListener {
             if(isFormValid()) {
                 setupPaymentData()
-                showConfirmationSnackBar()
+                showConfirmationDialog()
                 mainViewModel.confirmTransaction()
-                clearFormOnOK()
             }
         }
     }
 
-    private fun showConfirmationSnackBar() {
-        // TODO("Not yet implemented")
+    private fun showConfirmationDialog() {
+        val alertDialogBuilder = AlertDialog.Builder(this)
+        alertDialogBuilder.setTitle("Confirm!")
+        alertDialogBuilder.setMessage("Send Binaria to ${mainViewModel.paymentInfo.personName}?")
+        alertDialogBuilder.setPositiveButton("Yes") { dialogInterface: DialogInterface, i: Int ->
+            Toast.makeText(this, "PAYMENT DONE", Toast.LENGTH_LONG).show()
+            clearFormOnOK()
+        }
+        alertDialogBuilder.setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int ->
+        }
+
+        alertDialog = alertDialogBuilder.create()
+        alertDialog?.show()
     }
 
     private fun observeAmountChange() {
         mainActivityBinding.transferAmountEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
-
             override fun onTextChanged(chars: CharSequence?, start: Int, before: Int, count: Int) {
                 showExchangeRate(chars.toString())
             }
-
             override fun afterTextChanged(p0: Editable?) {
             }
         })
@@ -102,10 +113,8 @@ class MainActivity : AppCompatActivity() {
             mainActivityBinding.countryACTextView.setAdapter(arrayAdapter)
 
             mainActivityBinding.countryACTextView.setOnItemClickListener { _, _, position, _ ->
-                //val  selectedName = adapterView.getItemAtPosition(position) as String
                 val selectedCountry = it[position]
                 mainViewModel.setPaymentCountryInfo(selectedCountry)
-                Log.d(TAG, selectedCountry.name + selectedCountry.phonePrefix)
 
                 mainActivityBinding.phoneNumberContainer.prefixText = selectedCountry.phonePrefix
                 mainActivityBinding.phoneNumberContainer.counterMaxLength = selectedCountry.phoneDigits
@@ -147,7 +156,11 @@ class MainActivity : AppCompatActivity() {
         println(mainViewModel.paymentInfo.toString())
     }
 
-    fun clearFormOnOK() {
-        // TODO("Not yet implemented")
+    private fun clearFormOnOK() {
+        mainActivityBinding.fullNameEditText.text?.clear()
+        mainActivityBinding.countryACTextView.text.clear()
+        mainActivityBinding.phoneNumberEditText.text?.clear()
+        mainActivityBinding.transferAmountEditText.text?.clear()
+        mainActivityBinding.exchangeInfo.text=""
     }
 }
