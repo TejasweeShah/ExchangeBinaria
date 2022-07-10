@@ -20,7 +20,7 @@
             android:hint="@string/full_name"
             app:startIconDrawable="@drawable/ic_person_24"
             app:endIconMode="clear_text"
-            app:helperText="Required"
+            app:helperText="@string/required"
             app:helperTextTextColor="@color/teal_700"
             app:counterEnabled="true"
             app:counterMaxLength="20"
@@ -47,7 +47,7 @@
             android:hint="@string/country"
             app:startIconDrawable="@drawable/ic_flag_24"
             app:endIconMode="dropdown_menu"
-            app:helperText="Required"
+            app:helperText="@string/required"
             app:helperTextTextColor="@color/teal_700"
             app:layout_constraintTop_toBottomOf="@id/fullNameContainer">
 
@@ -68,7 +68,7 @@
             android:hint="@string/phone_number"
             app:startIconDrawable="@drawable/ic_phone_24"
             app:endIconMode="clear_text"
-            app:helperText="Required"
+            app:helperText="@string/required"
             app:helperTextTextColor="@color/teal_700"
             app:prefixTextColor="@color/orange_800"
             app:counterEnabled="true"
@@ -90,7 +90,7 @@
             android:layout_marginTop="16dp"
             android:hint="@string/amount_to_transfer"
             app:endIconMode="clear_text"
-            app:helperText="Required"
+            app:helperText="@string/required"
             app:helperTextTextColor="@color/teal_700"
             app:layout_constraintTop_toBottomOf="@id/phoneNumberContainer"
             tools:layout_editor_absoluteX="16dp">
@@ -141,7 +141,7 @@
             android:visibility="gone"/>
 
         <RelativeLayout
-            android:id="@+id/no_internet_l"
+            android:id="@+id/no_internet_layout"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:background="#B3FFFFFF"

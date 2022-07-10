@@ -37,8 +37,8 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun observeExchangeRates() {
-        mainViewModel.latestRatesLiveData.observe(this){
-            when(it) {
+        mainViewModel.latestRatesLiveData.observe(this) {
+            when (it) {
                 is RequestResult.Error -> {
                     mainActivityBinding.loadingProgressBar.visibility = View.GONE
                     mainActivityBinding.exchangeInfo.text = it.message
@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupPayButton() {
         mainActivityBinding.payButton.setOnClickListener {
-            if(isFormValid()) {
+            if (isFormValid()) {
                 setupPaymentData()
                 showConfirmationDialog()
                 mainViewModel.confirmTransaction()
@@ -65,14 +65,15 @@ class MainActivity : AppCompatActivity() {
 
     private fun showConfirmationDialog() {
         val alertDialogBuilder = AlertDialog.Builder(this)
-        alertDialogBuilder.setTitle("Confirm!")
-        alertDialogBuilder.setMessage("Send Binaria to ${mainViewModel.paymentInfo.personName}?")
-        alertDialogBuilder.setPositiveButton("Yes") { dialogInterface: DialogInterface, i: Int ->
-            Toast.makeText(this, "PAYMENT DONE", Toast.LENGTH_LONG).show()
-            clearFormOnOK()
-        }
-        alertDialogBuilder.setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int ->
-        }
+        alertDialogBuilder
+            .setTitle("Confirm!")
+            .setMessage("Send Binaria to ${mainViewModel.paymentInfo.personName}?")
+            .setPositiveButton("Yes") { dialogInterface: DialogInterface, i: Int ->
+                Toast.makeText(this, "PAYMENT DONE", Toast.LENGTH_LONG).show()
+                clearFormOnOK()
+            }
+            .setNegativeButton("Cancel") { dialogInterface: DialogInterface, i: Int ->
+            }
 
         alertDialog = alertDialogBuilder.create()
         alertDialog?.show()
@@ -82,9 +83,11 @@ class MainActivity : AppCompatActivity() {
         mainActivityBinding.transferAmountEditText.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
             }
+
             override fun onTextChanged(chars: CharSequence?, start: Int, before: Int, count: Int) {
                 showExchangeRate(chars.toString())
             }
+
             override fun afterTextChanged(p0: Editable?) {
             }
         })
@@ -96,11 +99,11 @@ class MainActivity : AppCompatActivity() {
                 setupCountryAdapter()
                 mainViewModel.fetchLatestRates()
                 mainActivityBinding.payButton.isEnabled = true
-                mainActivityBinding.noInternetL.visibility = View.GONE
+                mainActivityBinding.noInternetLayout.visibility = View.GONE
             } else {
                 mainActivityBinding.payButton.isEnabled = false
                 mainActivityBinding.exchangeInfo.text = ""
-                mainActivityBinding.noInternetL.visibility = View.VISIBLE
+                mainActivityBinding.noInternetLayout.visibility = View.VISIBLE
             }
             Log.d(TAG, isConnected.toString())
         })
@@ -109,7 +112,11 @@ class MainActivity : AppCompatActivity() {
     private fun setupCountryAdapter() {
         mainViewModel.countriesLiveData.observe(this) {
             val countryNames = it.map { country -> country.name }
-            val arrayAdapter = ArrayAdapter(this, com.google.android.material.R.layout.support_simple_spinner_dropdown_item, countryNames)
+            val arrayAdapter = ArrayAdapter(
+                this,
+                com.google.android.material.R.layout.support_simple_spinner_dropdown_item,
+                countryNames
+            )
             mainActivityBinding.countryACTextView.setAdapter(arrayAdapter)
 
             mainActivityBinding.countryACTextView.setOnItemClickListener { _, _, position, _ ->
@@ -117,7 +124,8 @@ class MainActivity : AppCompatActivity() {
                 mainViewModel.setPaymentCountryInfo(selectedCountry)
 
                 mainActivityBinding.phoneNumberContainer.prefixText = selectedCountry.phonePrefix
-                mainActivityBinding.phoneNumberContainer.counterMaxLength = selectedCountry.phoneDigits
+                mainActivityBinding.phoneNumberContainer.counterMaxLength =
+                    selectedCountry.phoneDigits
                 mainActivityBinding.phoneNumberEditText.text?.clear()
 
                 val phoneDigits = selectedCountry.phoneDigits
@@ -131,20 +139,32 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showExchangeRate(amountString: String) {
-        if(amountString.isNotEmpty()){
+        if (amountString.isNotEmpty()) {
             val amountUSD = mainViewModel.convertBinaryToUSD(amountString)
             mainActivityBinding.amountContainer.helperText = "$amountUSD USD"
 
             // Show exchange rate
-            val exchangeInformation = mainViewModel.getExchangeRateInBinaria(amountUSD)
-            mainViewModel.setAmountToTransfer(exchangeInformation.first,exchangeInformation.second)
-            mainActivityBinding.exchangeInfo.text = "Rate:${exchangeInformation.first} \n\n Value: ${exchangeInformation.second}"
+            val exchangeInformation = mainViewModel.getExchangeInformation(amountUSD)
+            mainViewModel.setAmountToTransfer(exchangeInformation.first, exchangeInformation.second)
+            mainActivityBinding.exchangeInfo.text =
+                "Rate:${exchangeInformation.first} \n\n Value: ${exchangeInformation.second}"
         }
     }
 
-    fun isFormValid(): Boolean {
-        // TODO("Not yet implemented")
-        return true
+    private fun isFormValid(): Boolean {
+        with(mainActivityBinding) {
+            fullNameContainer.helperText = validName()
+            countryContainer.helperText = validCountry()
+            phoneNumberContainer.helperText = validPhone()
+            amountContainer.helperText = validAmount()
+        }
+        val validName = mainActivityBinding.fullNameContainer.helperText == null
+        val validCountry = mainActivityBinding.countryContainer.helperText == null
+        val validPhone = mainActivityBinding.phoneNumberContainer.helperText == null
+        val validAmount = mainActivityBinding.amountContainer.helperText == null
+
+        return validName && validCountry && validPhone && validAmount
+
     }
 
     private fun setupPaymentData() {
@@ -152,15 +172,52 @@ class MainActivity : AppCompatActivity() {
             name = mainActivityBinding.fullNameEditText.text.toString(),
             phone = mainActivityBinding.phoneNumberEditText.text.toString()
         )
-        // TODO: Remove this logging
-        println(mainViewModel.paymentInfo.toString())
+        //println(mainViewModel.paymentInfo.toString())
     }
 
     private fun clearFormOnOK() {
-        mainActivityBinding.fullNameEditText.text?.clear()
-        mainActivityBinding.countryACTextView.text.clear()
-        mainActivityBinding.phoneNumberEditText.text?.clear()
-        mainActivityBinding.transferAmountEditText.text?.clear()
-        mainActivityBinding.exchangeInfo.text=""
+        with(mainActivityBinding) {
+            fullNameEditText.text?.clear()
+            countryACTextView.text.clear()
+            phoneNumberEditText.text?.clear()
+            transferAmountEditText.text?.clear()
+            exchangeInfo.text = ""
+            fullNameContainer.helperText = getString(R.string.required)
+            countryContainer.helperText = getString(R.string.required)
+            phoneNumberContainer.helperText = getString(R.string.required)
+            amountContainer.helperText = getString(R.string.required)
+        }
+    }
+
+    private fun validName(): String? {
+        val nameText = mainActivityBinding.fullNameEditText.text.toString()
+        if (!nameText.trim().matches("^[A-Za-z,.'-]+\$".toRegex())) {
+            return "Only Letters Allowed"
+        }
+        return null
+    }
+
+    private fun validCountry(): String? {
+        val countryText = mainActivityBinding.countryACTextView.text.toString()
+        if (countryText.isBlank() || countryText.isEmpty()) {
+            return "Select Country"
+        }
+        return null
+    }
+
+    private fun validPhone(): String? {
+        val phoneText = mainActivityBinding.phoneNumberEditText.text.toString()
+        if (phoneText.length != mainActivityBinding.phoneNumberContainer.counterMaxLength) {
+            return "Enter Valid Phone Number"
+        }
+        return null
+    }
+
+    private fun validAmount(): String? {
+        val amountText = mainActivityBinding.transferAmountEditText.text.toString()
+        if (amountText.isEmpty() || amountText.isBlank()) {
+            return "Enter Valid Amount"
+        }
+        return null
     }
 }

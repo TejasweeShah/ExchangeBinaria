@@ -49,7 +49,7 @@ class MainViewModel @Inject constructor(
 
     fun setPayeeInfo(name: String, phone: String) {
         paymentInfo = paymentInfo.copy(
-            personName = name,
+            personName = name.trim(),
             phoneNumber = phone
         )
     }
@@ -68,7 +68,7 @@ class MainViewModel @Inject constructor(
 
     fun convertBinaryToUSD(amountBinaria: String) = PPHelpers.convertBinaryToUSD(amountBinaria)
 
-    fun getExchangeRateInBinaria(amountUSD: Long): Pair<Double,String> {
+    fun getExchangeInformation(amountUSD: Long): Pair<Double,String> {
         paymentInfo.countryAbbr?.let { country ->
             latestRatesLiveData.value?.data?.latestRates?.let { rates ->
                 val countryRate = rates[country]
@@ -79,14 +79,5 @@ class MainViewModel @Inject constructor(
             }
         }
         return Pair(0.0,"0")
-    }
-
-    fun getSelectedCountryExchangeRate(): Double {
-        paymentInfo.countryAbbr?.let { country ->
-            latestRatesLiveData.value?.data?.latestRates?.let { rates ->
-                return rates[country] ?: 0.0
-            }
-        }
-        return 0.0
     }
 }
