@@ -5,7 +5,8 @@ data class PayInfo(
     var countryName: String? = null,
     var countryAbbr: String? = null,
     var phonePrefix: String? = null,
+    var phoneDigits: Int? = null,
     var phoneNumber: String? = null,
     var exchangeRate: Double? = null,
-    val amountToTransfer: String ? = null
+    val amountToTransfer: String? = null
 )

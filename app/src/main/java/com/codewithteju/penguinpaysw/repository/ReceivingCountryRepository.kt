@@ -7,11 +7,11 @@ import javax.inject.Inject
 
 class ReceivingCountryRepository @Inject constructor(private val receivingCountryDAO: ReceivingCountryDAO) {
 
-    fun getAll() : LiveData<List<Country>> {
+    fun getAll(): LiveData<List<Country>> {
         return receivingCountryDAO.getAll()
     }
 
-    fun getCountries() : LiveData<List<String>> {
+    fun getCountries(): LiveData<List<String>> {
         return receivingCountryDAO.getCountries()
     }
 }

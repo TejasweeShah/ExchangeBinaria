@@ -1,6 +1,5 @@
 package com.codewithteju.penguinpaysw.repository
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.codewithteju.penguinpaysw.BuildConfig
@@ -11,7 +10,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class PenguinPayRepository @Inject constructor( private val ppAPI : PenguinPayAPI) {
+class PenguinPayRepository @Inject constructor(private val ppAPI: PenguinPayAPI) {
 
     private val _latestResponse = MutableLiveData<RequestResult<ExchangeRates>>()
     val latestResponse: LiveData<RequestResult<ExchangeRates>>
@@ -21,22 +20,15 @@ class PenguinPayRepository @Inject constructor( private val ppAPI : PenguinPayAP
         try {
             _latestResponse.postValue(RequestResult.Loading())
             val response = ppAPI.fetchLatestRates(BuildConfig.APP_ID)
-            if(response.isSuccessful && response.body() != null) {
+            if (response.isSuccessful && response.body() != null) {
                 _latestResponse.postValue(RequestResult.Success(response.body()!!))
-                Log.d("PP",response.body().toString())
-            }
-            else if(response.errorBody()!= null){
+            } else if (response.errorBody() != null) {
                 _latestResponse.postValue(RequestResult.Error("Error Code : ${response.code()}"))
-                Log.d("PP",response.errorBody().toString())
-                Log.d("PP",response.code().toString())
-            }
-            else{
+            } else {
                 _latestResponse.postValue(RequestResult.Error("Something went Wrong"))
-                Log.d("PP","Something went wrong")
             }
-        } catch (e: Exception){
+        } catch (e: Exception) {
             _latestResponse.postValue(RequestResult.Error(""))
-            Log.d("PP","Caught Something")
             e.printStackTrace()
         }
     }

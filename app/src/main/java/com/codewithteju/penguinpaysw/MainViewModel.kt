@@ -22,7 +22,6 @@ class MainViewModel @Inject constructor(
     val networkStatusManager: NetworkConnectionLD
 ) : ViewModel() {
     var paymentInfo = PayInfo()
-    lateinit var selectedCountry: Country
 
     val latestRatesLiveData: LiveData<RequestResult<ExchangeRates>>
         get() = ppRepository.latestResponse
@@ -44,7 +43,8 @@ class MainViewModel @Inject constructor(
         paymentInfo = paymentInfo.copy(
             countryName = country.name,
             countryAbbr = country.currencyAbbr,
-            phonePrefix = country.phonePrefix
+            phonePrefix = country.phonePrefix,
+            phoneDigits = country.phoneDigits
         )
     }
 
@@ -69,7 +69,7 @@ class MainViewModel @Inject constructor(
 
     fun convertBinaryToUSD(amountBinaria: String) = PPHelpers.convertBinaryToUSD(amountBinaria)
 
-    fun getExchangeInformation(amountUSD: Long): Pair<Double,String> {
+    fun getExchangeInformation(amountUSD: Long): Pair<Double, String> {
         paymentInfo.countryAbbr?.let { country ->
             latestRatesLiveData.value?.data?.latestRates?.let { rates ->
                 val countryRate = rates[country]
@@ -79,6 +79,6 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
-        return Pair(0.0,"0")
+        return Pair(0.0, "0")
     }
 }

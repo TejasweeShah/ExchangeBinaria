@@ -13,14 +13,16 @@ import javax.inject.Singleton
 
 @InstallIn(SingletonComponent::class)
 @Module
-class DatabaseModule{
+class DatabaseModule {
 
     @Singleton
     @Provides
-    fun providePenguinPayDB(@ApplicationContext context: Context) : PenguinPayDB{
-        return Room.databaseBuilder(context.applicationContext,
+    fun providePenguinPayDB(@ApplicationContext context: Context): PenguinPayDB {
+        return Room.databaseBuilder(
+            context.applicationContext,
             PenguinPayDB::class.java,
-            "PenguinPayDB")
+            "PenguinPayDB"
+        )
             .createFromAsset("default.db")
             .build()
     }

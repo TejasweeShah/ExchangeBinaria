@@ -16,8 +16,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.codewithteju.penguinpaysw.databinding.ActivityMainBinding
-import com.codewithteju.penguinpaysw.models.Country
-import com.codewithteju.penguinpaysw.utils.PPHelpers
 import com.codewithteju.penguinpaysw.utils.PPHelpers.validAmount
 import com.codewithteju.penguinpaysw.utils.PPHelpers.validCountry
 import com.codewithteju.penguinpaysw.utils.PPHelpers.validName
@@ -45,7 +43,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        updatePhoneUI(mainViewModel.selectedCountry)
+        mainViewModel.paymentInfo.phonePrefix?.let {
+            mainViewModel.paymentInfo.phoneDigits?.let { it1 -> updatePhoneUI(it, it1) }
+        }
     }
 
     private fun observeExchangeRates() {
@@ -110,7 +110,7 @@ class MainActivity : AppCompatActivity() {
             if (isConnected) {
                 setupCountryAdapter()
                 mainViewModel.fetchLatestRates()
-                with(mainActivityBinding){
+                with(mainActivityBinding) {
                     payButton.isEnabled = true
                     fullNameContainer.isEnabled = true
                     countryContainer.isEnabled = true
@@ -120,7 +120,7 @@ class MainActivity : AppCompatActivity() {
                 }
 
             } else {
-                with(mainActivityBinding){
+                with(mainActivityBinding) {
                     payButton.isEnabled = false
                     fullNameContainer.isEnabled = false
                     countryContainer.isEnabled = false
@@ -144,23 +144,22 @@ class MainActivity : AppCompatActivity() {
             )
             mainActivityBinding.countryACTextView.setAdapter(arrayAdapter)
             mainActivityBinding.countryACTextView.setOnItemClickListener { _, _, position, _ ->
-                mainViewModel.selectedCountry = it[position]
-                mainViewModel.setPaymentCountryInfo(mainViewModel.selectedCountry)
-                updatePhoneUI(mainViewModel.selectedCountry)
+                val selectedCountry = it[position]
+                mainViewModel.setPaymentCountryInfo(selectedCountry)
+                updatePhoneUI(selectedCountry.phonePrefix, selectedCountry.phoneDigits)
                 showExchangeRate(mainActivityBinding.transferAmountEditText.text.toString())
             }
         }
     }
 
-    private fun updatePhoneUI(selectedCountry: Country){
-        mainActivityBinding.phoneNumberContainer.prefixText = selectedCountry.phonePrefix
+    private fun updatePhoneUI(selectedCountryPrefix: String, selectedCountryPhoneDigits: Int) {
+        mainActivityBinding.phoneNumberContainer.prefixText = selectedCountryPrefix
         mainActivityBinding.phoneNumberContainer.counterMaxLength =
-            selectedCountry.phoneDigits
+            selectedCountryPhoneDigits
         mainActivityBinding.phoneNumberEditText.text?.clear()
 
-        val phoneDigits = selectedCountry.phoneDigits
         val fArray = arrayOfNulls<InputFilter>(1)
-        fArray[0] = LengthFilter(phoneDigits)
+        fArray[0] = LengthFilter(selectedCountryPhoneDigits)
         mainActivityBinding.phoneNumberEditText.filters = fArray
     }
 
@@ -181,7 +180,10 @@ class MainActivity : AppCompatActivity() {
         with(mainActivityBinding) {
             fullNameContainer.helperText = validName(fullNameEditText.text.toString())
             countryContainer.helperText = validCountry(countryACTextView.text.toString())
-            phoneNumberContainer.helperText = validPhone(phoneNumberEditText.text.toString(),phoneNumberContainer.counterMaxLength)
+            phoneNumberContainer.helperText = validPhone(
+                phoneNumberEditText.text.toString(),
+                phoneNumberContainer.counterMaxLength
+            )
             amountContainer.helperText = validAmount(transferAmountEditText.text.toString())
         }
         val validName = mainActivityBinding.fullNameContainer.helperText == null

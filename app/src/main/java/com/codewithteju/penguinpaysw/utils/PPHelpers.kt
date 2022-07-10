@@ -2,7 +2,7 @@ package com.codewithteju.penguinpaysw.utils
 
 import kotlin.math.pow
 
-object PPHelpers{
+object PPHelpers {
 
     fun convertBinaryToUSD(numStr: String): Long {
         var num = numStr.toLong()

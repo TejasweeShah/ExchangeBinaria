@@ -8,6 +8,6 @@ import retrofit2.http.Query
 interface PenguinPayAPI {
 
     @GET("/latest.json")
-    suspend fun fetchLatestRates(@Query("app_id")appId: String) : Response<ExchangeRates>
+    suspend fun fetchLatestRates(@Query("app_id") appId: String): Response<ExchangeRates>
 
 }

@@ -9,9 +9,9 @@ import com.codewithteju.penguinpaysw.models.Country
 interface ReceivingCountryDAO {
 
     @Query("SELECT * FROM COUNTRIES")
-    fun getAll() : LiveData<List<Country>>
+    fun getAll(): LiveData<List<Country>>
 
     @Query("SELECT ALL name FROM countries")
-    fun getCountries() : LiveData<List<String>>
+    fun getCountries(): LiveData<List<String>>
 
 }
