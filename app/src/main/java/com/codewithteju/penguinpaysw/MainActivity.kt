@@ -16,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.codewithteju.penguinpaysw.databinding.ActivityMainBinding
+import com.codewithteju.penguinpaysw.models.Country
 import com.codewithteju.penguinpaysw.utils.PPHelpers
 import com.codewithteju.penguinpaysw.utils.PPHelpers.validAmount
 import com.codewithteju.penguinpaysw.utils.PPHelpers.validCountry
@@ -40,6 +41,11 @@ class MainActivity : AppCompatActivity() {
         observeExchangeRates()
         observeAmountChange()
         setupPayButton()
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        updatePhoneUI(mainViewModel.selectedCountry)
     }
 
     private fun observeExchangeRates() {
@@ -137,24 +143,25 @@ class MainActivity : AppCompatActivity() {
                 countryNames
             )
             mainActivityBinding.countryACTextView.setAdapter(arrayAdapter)
-
             mainActivityBinding.countryACTextView.setOnItemClickListener { _, _, position, _ ->
-                val selectedCountry = it[position]
-                mainViewModel.setPaymentCountryInfo(selectedCountry)
-
-                mainActivityBinding.phoneNumberContainer.prefixText = selectedCountry.phonePrefix
-                mainActivityBinding.phoneNumberContainer.counterMaxLength =
-                    selectedCountry.phoneDigits
-                mainActivityBinding.phoneNumberEditText.text?.clear()
-
-                val phoneDigits = selectedCountry.phoneDigits
-                val fArray = arrayOfNulls<InputFilter>(1)
-                fArray[0] = LengthFilter(phoneDigits)
-                mainActivityBinding.phoneNumberEditText.filters = fArray
-
+                mainViewModel.selectedCountry = it[position]
+                mainViewModel.setPaymentCountryInfo(mainViewModel.selectedCountry)
+                updatePhoneUI(mainViewModel.selectedCountry)
                 showExchangeRate(mainActivityBinding.transferAmountEditText.text.toString())
             }
         }
+    }
+
+    private fun updatePhoneUI(selectedCountry: Country){
+        mainActivityBinding.phoneNumberContainer.prefixText = selectedCountry.phonePrefix
+        mainActivityBinding.phoneNumberContainer.counterMaxLength =
+            selectedCountry.phoneDigits
+        mainActivityBinding.phoneNumberEditText.text?.clear()
+
+        val phoneDigits = selectedCountry.phoneDigits
+        val fArray = arrayOfNulls<InputFilter>(1)
+        fArray[0] = LengthFilter(phoneDigits)
+        mainActivityBinding.phoneNumberEditText.filters = fArray
     }
 
     private fun showExchangeRate(amountString: String) {

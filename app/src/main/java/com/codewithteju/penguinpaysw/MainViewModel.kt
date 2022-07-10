@@ -22,6 +22,7 @@ class MainViewModel @Inject constructor(
     val networkStatusManager: NetworkConnectionLD
 ) : ViewModel() {
     var paymentInfo = PayInfo()
+    lateinit var selectedCountry: Country
 
     val latestRatesLiveData: LiveData<RequestResult<ExchangeRates>>
         get() = ppRepository.latestResponse

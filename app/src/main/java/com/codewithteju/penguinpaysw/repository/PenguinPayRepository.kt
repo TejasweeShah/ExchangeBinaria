@@ -35,8 +35,9 @@ class PenguinPayRepository @Inject constructor( private val ppAPI : PenguinPayAP
                 Log.d("PP","Something went wrong")
             }
         } catch (e: Exception){
-            _latestResponse.postValue(RequestResult.Error("Something went Wrong"))
-            Log.d("PP","Something went wrong")
+            _latestResponse.postValue(RequestResult.Error(""))
+            Log.d("PP","Caught Something")
+            e.printStackTrace()
         }
     }
 }
