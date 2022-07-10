@@ -44,7 +44,6 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:layout_marginHorizontal="16dp"
-            android:hint="@string/country"
             app:startIconDrawable="@drawable/ic_flag_24"
             app:endIconMode="dropdown_menu"
             app:helperText="@string/required"
@@ -55,6 +54,7 @@
                 android:id="@+id/countryACTextView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:hint="@string/country"
                 android:inputType="none" />
         </com.google.android.material.textfield.TextInputLayout>
 

@@ -13,8 +13,14 @@ import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
 import com.codewithteju.penguinpaysw.databinding.ActivityMainBinding
+import com.codewithteju.penguinpaysw.utils.PPHelpers
+import com.codewithteju.penguinpaysw.utils.PPHelpers.validAmount
+import com.codewithteju.penguinpaysw.utils.PPHelpers.validCountry
+import com.codewithteju.penguinpaysw.utils.PPHelpers.validName
+import com.codewithteju.penguinpaysw.utils.PPHelpers.validPhone
 import com.codewithteju.penguinpaysw.utils.RequestResult
 import com.codewithteju.penguinpaysw.utils.TAG
 import dagger.hilt.android.AndroidEntryPoint
@@ -40,14 +46,14 @@ class MainActivity : AppCompatActivity() {
         mainViewModel.latestRatesLiveData.observe(this) {
             when (it) {
                 is RequestResult.Error -> {
-                    mainActivityBinding.loadingProgressBar.visibility = View.GONE
+                    mainActivityBinding.loadingProgressBar.isVisible = false
                     mainActivityBinding.exchangeInfo.text = it.message
                 }
                 is RequestResult.Loading -> {
-                    mainActivityBinding.loadingProgressBar.visibility = View.VISIBLE
+                    mainActivityBinding.loadingProgressBar.isVisible = true
                 }
                 is RequestResult.Success -> {
-                    mainActivityBinding.loadingProgressBar.visibility = View.GONE
+                    mainActivityBinding.loadingProgressBar.isVisible = false
                 }
             }
         }
@@ -98,12 +104,25 @@ class MainActivity : AppCompatActivity() {
             if (isConnected) {
                 setupCountryAdapter()
                 mainViewModel.fetchLatestRates()
-                mainActivityBinding.payButton.isEnabled = true
-                mainActivityBinding.noInternetLayout.visibility = View.GONE
+                with(mainActivityBinding){
+                    payButton.isEnabled = true
+                    fullNameContainer.isEnabled = true
+                    countryContainer.isEnabled = true
+                    phoneNumberContainer.isEnabled = true
+                    amountContainer.isEnabled = true
+                    noInternetLayout.visibility = View.GONE
+                }
+
             } else {
-                mainActivityBinding.payButton.isEnabled = false
-                mainActivityBinding.exchangeInfo.text = ""
-                mainActivityBinding.noInternetLayout.visibility = View.VISIBLE
+                with(mainActivityBinding){
+                    payButton.isEnabled = false
+                    fullNameContainer.isEnabled = false
+                    countryContainer.isEnabled = false
+                    phoneNumberContainer.isEnabled = false
+                    amountContainer.isEnabled = false
+                    exchangeInfo.text = ""
+                    noInternetLayout.visibility = View.VISIBLE
+                }
             }
             Log.d(TAG, isConnected.toString())
         })
@@ -153,10 +172,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun isFormValid(): Boolean {
         with(mainActivityBinding) {
-            fullNameContainer.helperText = validName()
-            countryContainer.helperText = validCountry()
-            phoneNumberContainer.helperText = validPhone()
-            amountContainer.helperText = validAmount()
+            fullNameContainer.helperText = validName(fullNameEditText.text.toString())
+            countryContainer.helperText = validCountry(countryACTextView.text.toString())
+            phoneNumberContainer.helperText = validPhone(phoneNumberEditText.text.toString(),phoneNumberContainer.counterMaxLength)
+            amountContainer.helperText = validAmount(transferAmountEditText.text.toString())
         }
         val validName = mainActivityBinding.fullNameContainer.helperText == null
         val validCountry = mainActivityBinding.countryContainer.helperText == null
@@ -172,7 +191,6 @@ class MainActivity : AppCompatActivity() {
             name = mainActivityBinding.fullNameEditText.text.toString(),
             phone = mainActivityBinding.phoneNumberEditText.text.toString()
         )
-        //println(mainViewModel.paymentInfo.toString())
     }
 
     private fun clearFormOnOK() {
@@ -187,37 +205,5 @@ class MainActivity : AppCompatActivity() {
             phoneNumberContainer.helperText = getString(R.string.required)
             amountContainer.helperText = getString(R.string.required)
         }
-    }
-
-    private fun validName(): String? {
-        val nameText = mainActivityBinding.fullNameEditText.text.toString()
-        if (!nameText.trim().matches("^[A-Za-z,.'-]+\$".toRegex())) {
-            return "Only Letters Allowed"
-        }
-        return null
-    }
-
-    private fun validCountry(): String? {
-        val countryText = mainActivityBinding.countryACTextView.text.toString()
-        if (countryText.isBlank() || countryText.isEmpty()) {
-            return "Select Country"
-        }
-        return null
-    }
-
-    private fun validPhone(): String? {
-        val phoneText = mainActivityBinding.phoneNumberEditText.text.toString()
-        if (phoneText.length != mainActivityBinding.phoneNumberContainer.counterMaxLength) {
-            return "Enter Valid Phone Number"
-        }
-        return null
-    }
-
-    private fun validAmount(): String? {
-        val amountText = mainActivityBinding.transferAmountEditText.text.toString()
-        if (amountText.isEmpty() || amountText.isBlank()) {
-            return "Enter Valid Amount"
-        }
-        return null
     }
 }
