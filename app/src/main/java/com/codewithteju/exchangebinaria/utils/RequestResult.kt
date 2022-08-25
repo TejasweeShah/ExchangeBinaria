@@ -1,4 +1,4 @@
-package com.codewithteju.penguinpaysw.utils
+package com.codewithteju.exchangebinaria.utils
 
 sealed class RequestResult<T>(val data: T? = null, val message: String? = null) {
     class Success<T>(data: T) : RequestResult<T>(data)

@@ -1,4 +1,4 @@
-package com.codewithteju.penguinpaysw
+package com.codewithteju.exchangebinaria
 
 import org.junit.Test
 

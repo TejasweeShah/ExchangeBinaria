@@ -1,4 +1,4 @@
-package com.codewithteju.penguinpaysw.utils
+package com.codewithteju.exchangebinaria.utils
 
 import android.util.Log
 import java.io.IOException

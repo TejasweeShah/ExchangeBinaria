@@ -1,11 +1,11 @@
-package com.codewithteju.penguinpaysw.repository
+package com.codewithteju.exchangebinaria.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.codewithteju.penguinpaysw.BuildConfig
-import com.codewithteju.penguinpaysw.api.PenguinPayAPI
-import com.codewithteju.penguinpaysw.models.ExchangeRates
-import com.codewithteju.penguinpaysw.utils.RequestResult
+import com.codewithteju.exchangebinaria.BuildConfig
+import com.codewithteju.exchangebinaria.api.PenguinPayAPI
+import com.codewithteju.exchangebinaria.models.ExchangeRates
+import com.codewithteju.exchangebinaria.utils.RequestResult
 import javax.inject.Inject
 import javax.inject.Singleton
 

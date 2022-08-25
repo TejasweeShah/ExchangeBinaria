@@ -1,4 +1,4 @@
-package com.codewithteju.penguinpaysw.models
+package com.codewithteju.exchangebinaria.models
 
 import com.google.gson.annotations.SerializedName
 

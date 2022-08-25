@@ -1,7 +1,6 @@
-package com.codewithteju.penguinpaysw.utils
+package com.codewithteju.exchangebinaria.utils
 
 import android.app.Application
-import android.content.Context
 import android.content.Context.CONNECTIVITY_SERVICE
 import android.net.ConnectivityManager
 import android.net.Network

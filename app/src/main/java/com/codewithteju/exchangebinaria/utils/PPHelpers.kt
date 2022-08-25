@@ -1,4 +1,4 @@
-package com.codewithteju.penguinpaysw.utils
+package com.codewithteju.exchangebinaria.utils
 
 import kotlin.math.pow
 

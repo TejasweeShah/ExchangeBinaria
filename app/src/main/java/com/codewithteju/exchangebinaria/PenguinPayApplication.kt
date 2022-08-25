@@ -1,4 +1,4 @@
-package com.codewithteju.penguinpaysw
+package com.codewithteju.exchangebinaria
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

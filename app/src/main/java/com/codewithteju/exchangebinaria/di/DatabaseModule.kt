@@ -1,9 +1,9 @@
-package com.codewithteju.penguinpaysw.di
+package com.codewithteju.exchangebinaria.di
 
 import android.content.Context
 import androidx.room.Room
-import com.codewithteju.penguinpaysw.db.PenguinPayDB
-import com.codewithteju.penguinpaysw.db.ReceivingCountryDAO
+import com.codewithteju.exchangebinaria.db.PenguinPayDB
+import com.codewithteju.exchangebinaria.db.ReceivingCountryDAO
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

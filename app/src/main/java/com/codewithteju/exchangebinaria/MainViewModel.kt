@@ -1,16 +1,16 @@
-package com.codewithteju.penguinpaysw
+package com.codewithteju.exchangebinaria
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.codewithteju.penguinpaysw.models.Country
-import com.codewithteju.penguinpaysw.models.ExchangeRates
-import com.codewithteju.penguinpaysw.models.PayInfo
-import com.codewithteju.penguinpaysw.repository.PenguinPayRepository
-import com.codewithteju.penguinpaysw.repository.ReceivingCountryRepository
-import com.codewithteju.penguinpaysw.utils.NetworkConnectionLD
-import com.codewithteju.penguinpaysw.utils.PPHelpers
-import com.codewithteju.penguinpaysw.utils.RequestResult
+import com.codewithteju.exchangebinaria.models.Country
+import com.codewithteju.exchangebinaria.models.ExchangeRates
+import com.codewithteju.exchangebinaria.models.PayInfo
+import com.codewithteju.exchangebinaria.repository.PenguinPayRepository
+import com.codewithteju.exchangebinaria.repository.ReceivingCountryRepository
+import com.codewithteju.exchangebinaria.utils.NetworkConnectionLD
+import com.codewithteju.exchangebinaria.utils.PPHelpers
+import com.codewithteju.exchangebinaria.utils.RequestResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

@@ -1,8 +1,8 @@
-package com.codewithteju.penguinpaysw.repository
+package com.codewithteju.exchangebinaria.repository
 
 import androidx.lifecycle.LiveData
-import com.codewithteju.penguinpaysw.db.ReceivingCountryDAO
-import com.codewithteju.penguinpaysw.models.Country
+import com.codewithteju.exchangebinaria.db.ReceivingCountryDAO
+import com.codewithteju.exchangebinaria.models.Country
 import javax.inject.Inject
 
 class ReceivingCountryRepository @Inject constructor(private val receivingCountryDAO: ReceivingCountryDAO) {

@@ -1,4 +1,4 @@
-package com.codewithteju.penguinpaysw
+package com.codewithteju.exchangebinaria
 
 import android.content.DialogInterface
 import android.os.Bundle
@@ -15,13 +15,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.lifecycle.Observer
-import com.codewithteju.penguinpaysw.databinding.ActivityMainBinding
-import com.codewithteju.penguinpaysw.utils.PPHelpers.validAmount
-import com.codewithteju.penguinpaysw.utils.PPHelpers.validCountry
-import com.codewithteju.penguinpaysw.utils.PPHelpers.validName
-import com.codewithteju.penguinpaysw.utils.PPHelpers.validPhone
-import com.codewithteju.penguinpaysw.utils.RequestResult
-import com.codewithteju.penguinpaysw.utils.TAG
+import com.codewithteju.exchangebinaria.databinding.ActivityMainBinding
+import com.codewithteju.exchangebinaria.utils.PPHelpers.validAmount
+import com.codewithteju.exchangebinaria.utils.PPHelpers.validCountry
+import com.codewithteju.exchangebinaria.utils.PPHelpers.validName
+import com.codewithteju.exchangebinaria.utils.PPHelpers.validPhone
+import com.codewithteju.exchangebinaria.utils.RequestResult
+import com.codewithteju.exchangebinaria.utils.TAG
 import dagger.hilt.android.AndroidEntryPoint
 
 

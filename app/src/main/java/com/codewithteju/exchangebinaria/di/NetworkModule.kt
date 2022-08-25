@@ -1,8 +1,8 @@
-package com.codewithteju.penguinpaysw.di
+package com.codewithteju.exchangebinaria.di
 
 
-import com.codewithteju.penguinpaysw.BuildConfig
-import com.codewithteju.penguinpaysw.api.PenguinPayAPI
+import com.codewithteju.exchangebinaria.BuildConfig
+import com.codewithteju.exchangebinaria.api.PenguinPayAPI
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

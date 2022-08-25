@@ -1,9 +1,9 @@
-package com.codewithteju.penguinpaysw.db
+package com.codewithteju.exchangebinaria.db
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import com.codewithteju.penguinpaysw.models.Country
+import com.codewithteju.exchangebinaria.models.Country
 
 @Dao
 interface ReceivingCountryDAO {
